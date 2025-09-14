@@ -262,7 +262,7 @@ export default function Dashboard() {
           <p className="py-4">{modalMessage}</p>
           <div className="modal-action">
             <form method="dialog">
-              <button className={`btn btn-primary ${isLoading ? 'loading' : ''}`}>Close</button>
+              <button className={`btn btn-primary `}>Close</button>
             </form>
           </div>
         </div>
@@ -335,8 +335,8 @@ export default function Dashboard() {
               />
             </div>
             <div className="form-control md:col-span-2">
-              <button className={`btn btn-primary w-full ${isLoading ? 'loading' : ''}`} type="submit">
-                {isLoading ? 'Loading...' : 'Add Transaction'}
+              <button className={`btn btn-primary w-full `} type="submit">
+                Add Transaction
               </button>
             </div>
           </div>
@@ -357,10 +357,10 @@ export default function Dashboard() {
             onChange={(e) => setEndDate(e.target.value)}
           />
           <button
-            className={`btn btn-secondary w-full ${isLoading ? 'loading' : ''}`}
+            className={`btn btn-secondary w-full `}
             onClick={resetDateRange}
           >
-            {isLoading ? 'Loading...' : 'Reset'}
+            Reset
           </button>
         </div>
       </div>
@@ -399,8 +399,8 @@ export default function Dashboard() {
               </label>
             </div>
           </div>
-          <button className={`btn btn-primary w-full sm:w-auto ${isLoading ? 'loading' : ''}`} type="submit">
-            {isLoading ? 'Loading...' : 'Submit Receipt'}
+          <button className={`btn btn-primary w-full sm:w-auto `} type="submit">
+            Submit Receipt
           </button>
         </form>
       </div>
@@ -415,18 +415,17 @@ export default function Dashboard() {
             className="file-input file-input-bordered w-full max-w-xs"
             onChange={(e) => setHistoryFile(e.target.files[0])}
           />
-          <button className={`btn btn-primary w-full mb-3 ml-3 sm:w-auto ${isLoading ? 'loading' : ''}`} type="submit">
-            {isLoading ? 'Loading...' : 'Submit History'}
+          <button className={`btn btn-primary w-full mb-3 ml-3 sm:w-auto `} type="submit">
+            Submit History
           </button>
         </form>
       </div>
 
-
       <div className="card bg-base-100 shadow-xl p-4 mb-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="card-title">Transactions</h2>
-          <button className={`btn btn-secondary ${isLoading ? 'loading' : ''}`} onClick={fetchTransactions}>
-            {isLoading ? 'Loading...' : 'Refresh'}
+          <button className={`btn btn-secondary `} onClick={fetchTransactions}>
+            Refresh
           </button>
         </div>
         <div className="overflow-x-auto">
