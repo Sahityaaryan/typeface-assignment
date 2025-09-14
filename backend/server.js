@@ -12,11 +12,11 @@ const app = express();
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (e.g., mobile apps) or from localhost/your frontend
+    
     const allowedOrigins = [
-      'http://localhost:3000',  // Local Next.js dev
-      'https://your-frontend-deployed-url.vercel.app',  // If you deploy frontend (e.g., Vercel)
-      '*'  // For now; restrict in prod
+      'http://localhost:3000',  
+      'https://personalfinanceassist.netlify.app',  
+      // '*'/
     ];
     if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
       callback(null, true);

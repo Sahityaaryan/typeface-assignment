@@ -42,6 +42,7 @@ export default function Dashboard() {
 
   const fetchTransactions = async () => {
     try {
+      console.log("urLL: ", process.env.NEXT_PUBLIC_API_URL)
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, {
         params: { startDate, endDate, page, limit: 10 },
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
