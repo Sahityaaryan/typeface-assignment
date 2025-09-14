@@ -2,6 +2,9 @@
 
 A full-stack application to track and manage personal finances, built with Next.js, Tailwind CSS, DaisyUI, Node.js, Express, and MongoDB.
 
+## Deployed Site
+- Live URL: [https://personalfinanceassist.netlify.app](https://personalfinanceassist.netlify.app)
+
 ## Features
 - Create, view, and manage income/expense entries.
 - List transactions within a specified date range with pagination.
@@ -19,7 +22,7 @@ A full-stack application to track and manage personal finances, built with Next.
 ## Prerequisites
 - Node.js (v16 or higher)
 - MongoDB (local or cloud, e.g., MongoDB Atlas)
-- Tesseract.js dependencies (for OCR, install Tesseract on your system if needed)
+- OCR-SPACE-API dependencies (for OCR, install Tesseract on your system if needed)
 
 ## Installation
 
