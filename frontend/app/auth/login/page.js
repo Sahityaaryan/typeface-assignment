@@ -2,26 +2,31 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, { email, password });
-      localStorage.setItem('token', res.data.token);
-      router.push('/dashboard');
+      login(res.data.token);
+      router.push('/');
     } catch (err) {
       console.log("Error[Login]: ", err);
       setError('Invalid credentials');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col">
@@ -31,20 +36,21 @@ export default function Login() {
             {error && <div className="alert alert-error">{error}</div>}
             <div className="form-control">
               <label className="label">Email</label>
-              <input type="email" className="input input-bordered" value={email} onChange={e => setEmail(e.target.value)} />
+              <input type="email" className="input input-bordered" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="form-control">
               <label className="label">Password</label>
-              <input type="password" className="input input-bordered" value={password} onChange={e => setPassword(e.target.value)} />
+              <input type="password" className="input input-bordered" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div className="card-actions justify-end">
-              <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+              <button className={`btn btn-primary ${isLoading ? 'loading animate-spin' : ''}`} onClick={handleLogin}>
+                {isLoading ? '' : 'Login'}
+              </button>
             </div>
             <p className="mt-2">Don't have an account? <a href="/auth/register" className="link link-primary">Register</a></p>
           </div>
         </div>
       </div>
-
     </div>
   );
 }
