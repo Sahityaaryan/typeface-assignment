@@ -9,7 +9,29 @@ const cors = require('cors');
 dotenv.config();
 const app = express();
 
-app.use(cors());
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g., mobile apps) or from localhost/your frontend
+    const allowedOrigins = [
+      'http://localhost:3000',  // Local Next.js dev
+      'https://your-frontend-deployed-url.vercel.app',  // If you deploy frontend (e.g., Vercel)
+      '*'  // For now; restrict in prod
+    ];
+    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,  // For JWT cookies if needed
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Explicitly allow OPTIONS for preflight
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']  // Common headers
+}));
+
+// Handle preflight OPTIONS requests globally (fallback)
+app.options('*', cors());
+
 app.use(express.json());
 const upload = multer({ storage: multer.memoryStorage() });
 
