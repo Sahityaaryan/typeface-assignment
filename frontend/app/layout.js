@@ -1,5 +1,6 @@
 import './globals.css';
 import Navbar from './components/Navbar';
+import { AuthProvider } from './context/AuthContext';
 
 export const metadata = {
   title: 'Personal Finance Assistant',
@@ -9,9 +10,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-base-200 pt-16"> {/* Added pt-16 to avoid overlap with navbar */}
-        <Navbar />
-        {children}
+      <body className="bg-base-200 pt-16">
+        <AuthProvider>
+          <Navbar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

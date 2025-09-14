@@ -4,7 +4,6 @@
   themes: night --default, night --prefersdark;
 }
 
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -28,4 +27,47 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid #ccc;
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.btn.loading::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid #ccc;
+  border-top-color: #e74c3c;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+}
+
+.btn.loading span {
+  visibility: hidden;
 }
