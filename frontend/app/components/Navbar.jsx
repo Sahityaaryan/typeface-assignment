@@ -15,13 +15,13 @@ export default function Navbar() {
   };
 
   return (
-    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-lg w-full bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-box">
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-3/4 md:w-full bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-box">
       <div className="navbar">
         <div className="navbar-center flex justify-between items-center w-full">
           <Link href="/" className="btn btn-ghost normal-case text-xl">
             Finance Assistant
           </Link>
-          <ul className="menu menu-horizontal px-1 flex items-center space-x-4">
+          <ul className="menu menu-horizontal px-1 flex items-center space-x-4 hidden md:flex">
             {isAuthenticated ? (
               <>
                 <li>
@@ -75,11 +75,11 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
             </label>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-white/10 backdrop-blur-md rounded-box w-52 border border-white/20">
+            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-white/10 backdrop-blur-md rounded-box w-52 border border-white/20 flex items-center">
               {isAuthenticated ? (
                 <>
                   <li>
-                    <Link href="/dashboard" className={`hover:scale-105 transition-transform duration-200 ${pathname === '/dashboard' ? 'text-primary font-semibold' : ''}`}>
+                    <Link href="/dashboard" className={`hover:scale-105  transition-transform duration-200 ${pathname === '/dashboard' ? 'text-primary font-semibold' : ''}`}>
                       Dashboard
                     </Link>
                   </li>
