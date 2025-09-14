@@ -17,13 +17,13 @@ A full-stack application to track and manage personal finances, built with Next.
 ## Tech Stack
 - **Frontend**: Next.js, Tailwind CSS, DaisyUI, Chart.js, Axios
 - **Backend**: Node.js, Express, MongoDB (Mongoose), JWT
-- **File Processing**: Tesseract.js (OCR for images), pdf2json (PDF parsing)
+- **File Processing**: OCR-SPACE-API (OCR for images), pdf-parse (PDF parsing)
 - **Other**: Multer (file uploads)
 
 ## Prerequisites
 - Node.js (v16 or higher)
 - MongoDB (local or cloud, e.g., MongoDB Atlas)
-- OCR-SPACE-API dependencies (for OCR, install Tesseract on your system if needed)
+- OCR-SPACE-API dependencies (for OCR)
 
 ## Installation
 
