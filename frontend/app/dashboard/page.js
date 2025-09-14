@@ -21,7 +21,8 @@ export default function Dashboard() {
   const [historyFile, setHistoryFile] = useState(null);
   const [modalMessage, setModalMessage] = useState('');
   const [modalType, setModalType] = useState('success');
-  const [ocrMethod, setOcrMethod] = useState('standard'); // Default to standard OCR
+  const [ocrMethod, setOcrMethod] = useState('standard');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const categoryChartRef = useRef(null);
   const dateChartRef = useRef(null);
@@ -42,7 +43,7 @@ export default function Dashboard() {
 
   const fetchTransactions = async () => {
     try {
-      console.log("urLL: ", process.env.NEXT_PUBLIC_API_URL)
+      console.log("urLL: ", process.env.NEXT_PUBLIC_API_URL);
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, {
         params: { startDate, endDate, page, limit: 10 },
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -65,6 +66,7 @@ export default function Dashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
@@ -89,6 +91,8 @@ export default function Dashboard() {
         setModalType('error');
         document.getElementById('alert_modal').showModal();
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -100,6 +104,7 @@ export default function Dashboard() {
       document.getElementById('alert_modal').showModal();
       return;
     }
+    setIsLoading(true);
     const formData = new FormData();
     formData.append('file', receiptFile);
     try {
@@ -138,6 +143,8 @@ export default function Dashboard() {
         setModalType('error');
         document.getElementById('alert_modal').showModal();
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -149,6 +156,7 @@ export default function Dashboard() {
       document.getElementById('alert_modal').showModal();
       return;
     }
+    setIsLoading(true);
     const formData = new FormData();
     formData.append('file', historyFile);
     try {
@@ -172,6 +180,8 @@ export default function Dashboard() {
         setModalType('error');
         document.getElementById('alert_modal').showModal();
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -235,9 +245,15 @@ export default function Dashboard() {
     });
   };
 
+  const resetDateRange = () => {
+    setStartDate('');
+    setEndDate('');
+    fetchTransactions();
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
       <dialog id="alert_modal" className="modal">
         <div className="modal-box">
           <h3 className={`font-bold text-lg ${modalType === 'error' ? 'text-error' : 'text-success'}`}>
@@ -246,68 +262,183 @@ export default function Dashboard() {
           <p className="py-4">{modalMessage}</p>
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary">Close</button>
+              <button className={`btn btn-primary ${isLoading ? 'loading' : ''}`}>Close</button>
             </form>
           </div>
         </div>
       </dialog>
-      <form onSubmit={handleSubmit} className="card bg-base-100 shadow-xl p-4 mb-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <select className="select select-bordered" value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="expense">Expense</option>
-            <option value="income">Income</option>
-          </select>
-          <input type="number" placeholder="Amount" className="input input-bordered" value={amount} onChange={(e) => setAmount(e.target.value)} />
-          <input type="text" placeholder="Category" className="input input-bordered" value={category} onChange={(e) => setCategory(e.target.value)} />
-          <input type="date" className="input input-bordered" value={date} onChange={(e) => setDate(e.target.value)} />
-          <input type="text" placeholder="Description" className="input input-bordered" value={description} onChange={(e) => setDescription(e.target.value)} />
-          <button type="submit" className="btn btn-primary">Add Transaction</button>
-        </div>
-      </form>
+      <div className="card bg-base-100 shadow-xl p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Add Transaction</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Type</span>
+              </label>
+              <select
+                className="select select-bordered w-full"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+              </select>
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Amount (₹)</span>
+              </label>
+              <input
+                type="number"
+                className="input input-bordered w-full"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+                required
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Category</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="e.g., Food, Fuel"
+                required
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Date</span>
+              </label>
+              <input
+                type="date"
+                className="input input-bordered w-full"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-control md:col-span-2">
+              <label className="label">
+                <span className="label-text">Description</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered w-full"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="e.g., Grocery shopping"
+              />
+            </div>
+            <div className="form-control md:col-span-2">
+              <button className={`btn btn-primary w-full ${isLoading ? 'loading' : ''}`} type="submit">
+                {isLoading ? 'Loading...' : 'Add Transaction'}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
       <div className="card bg-base-100 shadow-xl p-4 mb-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="date" className="input input-bordered" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-          <input type="date" className="input input-bordered" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input
+            type="date"
+            className="input input-bordered w-full"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <input
+            type="date"
+            className="input input-bordered w-full"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <button
+            className={`btn btn-secondary w-full ${isLoading ? 'loading' : ''}`}
+            onClick={resetDateRange}
+          >
+            {isLoading ? 'Loading...' : 'Reset'}
+          </button>
         </div>
       </div>
       <div className="card bg-base-100 shadow-xl p-4 mb-4">
         <h2 className="card-title mb-2">Upload Receipt (Image/PDF)</h2>
-        <form onSubmit={handleReceiptUpload}>
-          <input type="file" accept="image/*,.pdf" className="file-input file-input-bordered w-full max-w-xs" onChange={(e) => setReceiptFile(e.target.files[0])} />
-          <div className="mt-2">
-            <label className="label">
-              <input type="radio" value="standard" checked={ocrMethod === 'standard'} onChange={(e) => setOcrMethod(e.target.value)} className="radio" />
-              <span className="ml-2">Standard OCR (60-70% accuracy) - Supports images and PDFs</span>
-            </label>
-            <label className="label">
-              <input type="radio" value="ai-enhanced" checked={ocrMethod === 'ai-enhanced'} onChange={(e) => setOcrMethod(e.target.value)} className="radio" />
-              <span className="ml-2">AI-Enhanced OCR (97-98% accuracy) - Supports images and PDFs</span>
-            </label>
+        <form onSubmit={handleReceiptUpload} className="space-y-4">
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            className="file-input file-input-bordered w-full max-w-xs"
+            onChange={(e) => setReceiptFile(e.target.files[0])}
+          />
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+            <div className="form-control flex-1 max-w-full">
+              <label className="label cursor-pointer flex items-center gap-2 break-words">
+                <input
+                  type="radio"
+                  value="standard"
+                  checked={ocrMethod === 'standard'}
+                  onChange={(e) => setOcrMethod(e.target.value)}
+                  className="radio radio-primary"
+                />
+                <span className="label-text break-words text-wrap max-w-[200px] sm:max-w-none">Standard OCR (60-70% accuracy) - Supports images and PDFs</span>
+              </label>
+            </div>
+            <div className="form-control flex-1 max-w-full">
+              <label className="label cursor-pointer flex items-center gap-2 break-words">
+                <input
+                  type="radio"
+                  value="ai-enhanced"
+                  checked={ocrMethod === 'ai-enhanced'}
+                  onChange={(e) => setOcrMethod(e.target.value)}
+                  className="radio radio-secondary"
+                />
+                <span className="label-text break-words text-wrap max-w-[200px] sm:max-w-none">AI-Enhanced OCR (97-98% accuracy) - Supports images and PDFs</span>
+              </label>
+            </div>
           </div>
-          <button type="submit" className="btn btn-primary mt-2">Submit Receipt</button>
+          <button className={`btn btn-primary w-full sm:w-auto ${isLoading ? 'loading' : ''}`} type="submit">
+            {isLoading ? 'Loading...' : 'Submit Receipt'}
+          </button>
         </form>
       </div>
+
+      {/* upload transaction history */}
       <div className="card bg-base-100 shadow-xl p-4 mb-4">
         <h2 className="card-title mb-2">Upload Transaction History (PDF)</h2>
-        <form onSubmit={handleHistoryUpload}>
-          <input type="file" accept=".pdf" className="file-input file-input-bordered w-full max-w-xs" onChange={(e) => setHistoryFile(e.target.files[0])} />
-          <button type="submit" className="btn btn-primary mt-2">Submit History</button>
+        <form onSubmit={handleHistoryUpload} className="space-y-4">
+          <input
+            type="file"
+            accept=".pdf"
+            className="file-input file-input-bordered w-full max-w-xs"
+            onChange={(e) => setHistoryFile(e.target.files[0])}
+          />
+          <button className={`btn btn-primary w-full mb-3 ml-3 sm:w-auto ${isLoading ? 'loading' : ''}`} type="submit">
+            {isLoading ? 'Loading...' : 'Submit History'}
+          </button>
         </form>
       </div>
+
+
       <div className="card bg-base-100 shadow-xl p-4 mb-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="card-title">Transactions</h2>
-          <button onClick={fetchTransactions} className="btn btn-secondary">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h5m11 11v-5h-5" />
-            </svg>
-            Refresh
+          <button className={`btn btn-secondary ${isLoading ? 'loading' : ''}`} onClick={fetchTransactions}>
+            {isLoading ? 'Loading...' : 'Refresh'}
           </button>
         </div>
         <div className="overflow-x-auto">
           <table className="table w-full">
             <thead>
-              <tr><th>Type</th><th>Amount</th><th>Category</th><th>Date</th><th>Description</th></tr>
+              <tr>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Description</th>
+              </tr>
             </thead>
             <tbody>
               {transactions.map((t) => (
